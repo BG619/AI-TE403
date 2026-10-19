@@ -2,7 +2,6 @@
 
 Aplikasi desktop berbasis **Python + Tkinter** untuk memvisualisasikan cara kerja algoritma pencarian (*search algorithm*) **Breadth-First Search (BFS)** dan **Depth-First Search (DFS)** pada sebuah grid/maze secara animasi.
 
-**Penulis:** Moh. Fathirochman Yasin (NIM 101022400093) - S1 Teknik Elektro, Telkom University
 
 ---
 
