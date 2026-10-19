@@ -1,3 +1,4 @@
+
 """
 Visualisasi Search Algorithm (BFS & DFS) pada grid / maze.
 
@@ -20,12 +21,12 @@ C_EMPTY = "#ffffff"
 C_WALL = "#2d3142"
 C_START = "#2ecc71"
 C_END = "#e74c3c"
-C_FRONTIER = "#f9e79f"   # sudah masuk antrian / stack, belum dikunjungi
-C_VISITED = "#85c1e9"    # sudah dikunjungi
-C_PATH = "#f5b041"       # jalur hasil
+C_FRONTIER = "#f9e79f"   
+C_VISITED = "#85c1e9"    
+C_PATH = "#f5b041"       
 C_GRID = "#d0d3d4"
 
-DIRS = ((-1, 0), (0, 1), (1, 0), (0, -1))  # atas, kanan, bawah, kiri
+DIRS = ((-1, 0), (0, 1), (1, 0), (0, -1))  
 
 
 # =====================================================================
