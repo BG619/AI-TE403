@@ -1,4 +1,4 @@
-#Bagian ini dapat memvisualisasikan Informed Algorithm (A* dan Djikstra)
+#Bagian Code ini dapat menampilkan dan memvisualiasikan Informed Algorithm (A* dan Greedy - Best - First)
 
 from tkinter import *
 from tkinter import ttk
@@ -200,20 +200,22 @@ def break_wall(current, new):
     wall.reset()
     wall.barrier = False
 
-def dijkstras(grid, tickTime):
+# Greedy Best-First Search Algorithm
+def greedy_best_first(grid, tickTime):
     count = 0
     start = grid[Spot.start_point[1]][Spot.start_point[0]]
     end = grid[Spot.end_point[1]][Spot.end_point[0]]
     
     open_set = PriorityQueue()
-    open_set.put((0, count, start))
-    start.g = 0
+    open_set.put((h(start, end), count, start))
     
     open_set_hash = {start}
+    closed_set = set()
     
     while not open_set.empty():
         current = open_set.get()[2]
         open_set_hash.remove(current)
+        closed_set.add(current)
         
         if current == end:
             reconstruct_path(end, tickTime)
@@ -225,17 +227,12 @@ def dijkstras(grid, tickTime):
             return True
         
         for neighbor in current.neighbors:
-            temp_g_score = current.g + 1
-            
-            if temp_g_score < neighbor.g:
+            if neighbor not in closed_set and neighbor not in open_set_hash:
                 neighbor.parent = current
-                neighbor.g = temp_g_score
-                
-                if neighbor not in open_set_hash:
-                    count += 1
-                    open_set.put((neighbor.g, count, neighbor))
-                    open_set_hash.add(neighbor)
-                    neighbor.make_open()
+                count += 1
+                open_set.put((h(neighbor, end), count, neighbor))
+                open_set_hash.add(neighbor)
+                neighbor.make_open()
         
         root.update_idletasks()
         time.sleep(tickTime)
@@ -246,6 +243,7 @@ def dijkstras(grid, tickTime):
     messagebox.showinfo("No Solution", "There was no solution")
     return False
 
+# A-star algorithm
 def a_star(grid, tickTime):
     count = 0
     start = grid[Spot.start_point[1]][Spot.start_point[0]]
@@ -295,6 +293,7 @@ def a_star(grid, tickTime):
     messagebox.showinfo("No Solution", "There was no solution")
     return False
 
+# start pathfinding
 def StartAlgorithm():
     global grid
     if not grid: return
@@ -319,8 +318,8 @@ def StartAlgorithm():
     
     if algMenu.get() == 'A* Algorithm':
         a_star(grid, speedScale.get())
-    elif algMenu.get() == "Dijkstra's Algorithm":
-        dijkstras(grid, speedScale.get())    
+    elif algMenu.get() == 'Greedy Best-First Search':
+        greedy_best_first(grid, speedScale.get())    
         
     for row in grid:
         for spot in row:
@@ -549,7 +548,7 @@ Button(UI_frame, text='Build maze', command=build_maze, font = ("Helvetica", 14)
        bg='pale green').grid(row=2, column=0, padx=5, pady=(10, 20))
 
 algMenu = ttk.Combobox(UI_frame, textvariable=selected_alg, 
-                       values=['A* Algorithm', "Dijkstra's Algorithm"], font = font)
+                       values=['A* Algorithm', 'Greedy Best-First Search'], font = font)
 algMenu.grid(row=3, column=0, padx=5, pady=(20, 5), sticky=W)
 algMenu.current(0)
 
