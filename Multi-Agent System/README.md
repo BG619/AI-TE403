@@ -1,4 +1,4 @@
-# Multi-Agent System (MAS) pada Kecerdasan Buatan
+# Multi-Agent System (MAS) pada Kecerdasan Buatan (AI)
 
 Dokumentasi lengkap tentang **Multi-Agent System (MAS)**: apa itu, bagaimana cara kerjanya, arsitektur, komunikasi dan koordinasi antar agen, implementasi, hingga penerapannya di dunia nyata.
 
