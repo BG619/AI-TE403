@@ -309,46 +309,50 @@ Buka folder project di VS Code, buka `main.py`, lalu klik tombol **Run Python Fi
 
 ## 9. Output / Hasil Run
 
-Bagian ini menunjukkan hasil eksekusi BFS dan DFS pada **maze yang sama** (start dan finish sama, tembok identik) supaya perbandingannya adil.
+Bagian ini menampilkan hasil eksekusi program yang diambil langsung dari aplikasi (screenshot asli) untuk algoritma BFS dan DFS. Keduanya dijalankan pada grid 22 x 38 dengan kecepatan animasi 60, Start di sisi kiri (hijau) dan Finish di sisi kanan (merah).
 
 ### 9.1 Output BFS
 
-![Hasil BFS](images/hasil_bfs.png)
+![Hasil BFS](hasil_bfs.png)
 
 ```text
-BFS: selesai! Node dikunjungi: 434 | Panjang jalur: 41 langkah
+BFS: selesai! Node dikunjungi: 550 | Panjang jalur: 43 langkah
 ```
+
+Pengamatan:
+
+- Area biru (node dikunjungi) menyebar **merata ke hampir seluruh grid**, karena BFS menelusuri level demi level ke segala arah.
+- Jalur oranye relatif **lurus dan efisien** dari Start ke Finish.
+- Masih tersisa beberapa sel kuning (frontier) dan putih (belum dikunjungi) di sisi kanan, karena pencarian berhenti begitu Finish ditemukan.
 
 ### 9.2 Output DFS
 
-![Hasil DFS](images/hasil_dfs.png)
+![Hasil DFS](hasil_dfs.png)
 
 ```text
-DFS: selesai! Node dikunjungi: 225 | Panjang jalur: 125 langkah
+DFS: selesai! Node dikunjungi: 144 | Panjang jalur: 127 langkah
 ```
+
+Pengamatan:
+
+- Node yang dikunjungi **tidak menyebar merata**, melainkan masuk dalam satu arah ke area atas dan kanan grid terlebih dahulu.
+- Jalur oranye **berkelok-kelok dan sangat panjang**, karena DFS mengikuti satu cabang sedalam mungkin dan berhenti begitu menemukan Finish, tanpa mencari jalur yang lebih pendek.
+- Sebagian besar area kiri bawah grid tidak tersentuh sama sekali.
 
 ### 9.3 Tabel Perbandingan Hasil
 
 | Algoritma | Node Dikunjungi | Panjang Jalur | Keterangan |
 |---|---|---|---|
-| BFS | 434 | 41 langkah | Jalur **terpendek**, tetapi menjelajah banyak node (melebar) |
-| DFS | 225 | 125 langkah | Node yang dikunjungi lebih sedikit, tetapi jalur **jauh lebih panjang** (tidak optimal) |
+| BFS | 550 | 43 langkah | Jalur **terpendek**, tetapi menjelajah banyak node (melebar) |
+| DFS | 144 | 127 langkah | Node yang dikunjungi lebih sedikit, tetapi jalur **jauh lebih panjang** (tidak optimal) |
+
+> **Catatan:** kedua screenshot diambil dari maze acak yang **berbeda** (tombol **Maze Acak** ditekan sebelum masing-masing run), sehingga jumlah node yang dikunjungi tidak bisa dibandingkan secara langsung. Yang bisa diambil sebagai kesimpulan adalah **karakteristik** masing-masing algoritma: BFS menghasilkan jalur pendek dengan eksplorasi luas, sedangkan DFS menghasilkan jalur panjang yang berkelok. Untuk perbandingan yang adil, jalankan BFS lalu klik **Reset Jalur** (jangan tekan Maze Acak), kemudian jalankan DFS pada maze yang sama.
 
 ### 9.4 Analisis Hasil
 
-- **BFS** menemukan jalur sepanjang **41 langkah**, yaitu jalur terpendek, karena menelusuri level demi level sehingga Finish pasti ditemukan lewat jalur dengan langkah paling sedikit. Harganya, BFS mengunjungi lebih banyak node.
-- **DFS** hanya mengunjungi **225 node**, tetapi jalurnya **125 langkah**, hampir 3 kali lebih panjang. DFS masuk sedalam mungkin ke satu arah dan berhenti begitu menemukan Finish, tanpa peduli apakah itu jalur terbaik.
-- Jumlah node DFS bisa lebih sedikit atau lebih banyak dari BFS tergantung bentuk maze dan posisi Finish. Yang konsisten adalah: **BFS selalu optimal, DFS tidak**.
-
-> Catatan: angka di atas diperoleh dari menjalankan fungsi `bfs()` dan `dfs()` pada maze acak (`random.seed(7)`, kepadatan tembok 28%, Start di `(11, 3)`, Finish di `(11, 34)`). Hasil pada maze acak di aplikasi akan berbeda tiap kali tombol **Maze Acak** ditekan.
-
-### 9.5 Screenshot Asli dari Aplikasi
-
-Tambahkan screenshot asli dari aplikasi di bawah ini (ganti nama file sesuai punya kamu):
-
-![Tampilan awal aplikasi](images/tampilan_awal.png)
-![BFS sedang berjalan](images/bfs_berjalan.png)
-![DFS sedang berjalan](images/dfs_berjalan.png)
+- **BFS** menemukan jalur sepanjang **43 langkah**. Karena BFS memakai **queue (FIFO)** dan memperluas pencarian level demi level, Finish pasti ditemukan lewat jalur dengan langkah paling sedikit. Harganya, BFS harus mengunjungi banyak node (550) dan menyimpan frontier yang besar di memori.
+- **DFS** menemukan jalur sepanjang **127 langkah**, hampir **3 kali lebih panjang** daripada jalur BFS. Karena DFS memakai **stack (LIFO)**, ia masuk sedalam mungkin ke satu arah dan berhenti begitu Finish ketemu, tanpa peduli apakah itu jalur terbaik.
+- Jumlah node yang dikunjungi DFS bisa lebih sedikit maupun lebih banyak dari BFS, tergantung bentuk maze dan posisi Finish. Yang konsisten adalah: **BFS selalu menghasilkan jalur terpendek, DFS tidak**.
 
 ## 10. Penjelasan Kode
 
@@ -358,10 +362,8 @@ Struktur file:
 .
 ├── main.py
 ├── README.md
-└── images/
-    ├── hasil_bfs.png
-    ├── hasil_dfs.png
-    └── (screenshot lain)
+├── hasil_bfs.png
+└── hasil_dfs.png
 ```
 
 ### Pengaturan
