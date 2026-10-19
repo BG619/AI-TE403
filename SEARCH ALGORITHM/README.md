@@ -313,7 +313,7 @@ Bagian ini menunjukkan hasil eksekusi BFS dan DFS pada **maze yang sama** (start
 
 ### 9.1 Output BFS
 
-![Hasil BFS](images/hasil_bfs.png)
+![Hasil BFS](dev-fathir/images/hasil_bfs.png)
 
 ```text
 BFS: selesai! Node dikunjungi: 434 | Panjang jalur: 41 langkah
