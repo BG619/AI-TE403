@@ -1,6 +1,6 @@
 # Visualisasi Search Algorithm pada Grid / Maze
 
-Aplikasi desktop berbasis **Python + Tkinter** untuk memvisualisasikan cara kerja algoritma pencarian (*search algorithm*) **Breadth-First Search (BFS)** dan **Depth-First Search (DFS)** pada sebuah grid/maze secara animasi. Materi ini juga dilengkapi pembahasan **Informed Search** (**A\***, **Dijkstra**, dan **Greedy Best-First**) beserta perbandingan visualisasinya.
+Aplikasi desktop berbasis **Python + Tkinter** untuk memvisualisasikan cara kerja algoritma pencarian (*search algorithm*) **Breadth-First Search (BFS)** dan **Depth-First Search (DFS)** pada sebuah grid/maze secara animasi. Materi ini juga dilengkapi pembahasan **Informed Search** (**A\*** dan **Dijkstra**) beserta perbandingan visualisasinya.
 
 ---
 
