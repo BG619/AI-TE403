@@ -313,7 +313,7 @@ Bagian ini menampilkan hasil eksekusi program yang diambil langsung dari aplikas
 
 ### 9.1 Output BFS
 
-![Hasil BFS](hasil_bfs.png)
+![Hasil BFS](images/hasil_bfs.png)
 
 ```text
 BFS: selesai! Node dikunjungi: 550 | Panjang jalur: 43 langkah
@@ -327,7 +327,7 @@ Pengamatan:
 
 ### 9.2 Output DFS
 
-![Hasil DFS](hasil_dfs.png)
+![Hasil DFS](images/hasil_dfs.png)
 
 ```text
 DFS: selesai! Node dikunjungi: 144 | Panjang jalur: 127 langkah
