@@ -1,5 +1,4 @@
-
-## 🧭 Informed Search Algorithm (Visualisasi A\* dan Dijkstra)
+## 🧭 Informed Search Algorithm (Visualisasi A\* dan Greedy Best-First Search)
 
 > Bagian ini membahas visualisasi **Informed Search**, yaitu algoritma pencarian yang memakai *informasi tambahan* (heuristik) untuk memilih jalur.
 ---
@@ -9,8 +8,8 @@
 2. [Konsep Dasar](#2-konsep-dasar)
 3. [Algoritma yang Dibahas](#3-algoritma-yang-dibahas)
 4. [Cara Kerja A\*](#4-cara-kerja-a)
-5. [Cara Kerja Dijkstra](#5-cara-kerja-dijkstra)
-6. [Greedy Best-First Search](#6-greedy-best-first-search)
+5. [Cara Kerja Greedy Best-First Search](#5-cara-kerja-greedy-best-first-search)
+6. [Perbedaan A\* dan Greedy](#6-perbedaan-a-dan-greedy)
 7. [Contoh Perhitungan Manual](#7-contoh-perhitungan-manual)
 8. [Visualisasi Algoritma](#8-visualisasi-algoritma)
 9. [Efisiensi (Kompleksitas)](#9-efisiensi-kompleksitas)
@@ -33,11 +32,11 @@ Berbeda dengan BFS dan DFS yang mencari secara "buta" (hanya tahu struktur graf)
 | Arah pencarian | Melebar / mendalam tanpa tahu tujuan | Terarah ke tujuan |
 | Jumlah node dieksplorasi | Banyak | Umumnya lebih sedikit |
 
-> ⚠️ **Catatan penting tentang Dijkstra**
-> Secara teori, **Dijkstra termasuk Uninformed Search** (disebut juga *Uniform-Cost Search*) karena tidak memakai heuristik. Dijkstra tetap dibahas di sini karena:
-> - dipakai pada graf **berbobot**, sama seperti A\*,
-> - merupakan **kasus khusus A\*** dengan `h(n) = 0`,
-> - cocok sebagai pembanding untuk melihat **dampak heuristik** pada visualisasi.
+> 💡 **A\* dan Greedy Best-First sama-sama Informed Search.** Keduanya memakai heuristik `h(n)`. Perbedaannya hanya pada **rumus prioritas** yang dipakai untuk memilih node berikutnya:
+> - **Greedy**: `f(n) = h(n)` (hanya melihat perkiraan jarak ke Goal),
+> - **A\***: `f(n) = g(n) + h(n)` (melihat biaya yang sudah ditempuh **dan** perkiraan sisa jarak).
+>
+> Karena rumusnya mirip, keduanya cocok dibandingkan langsung pada visualisasi.
 
 ---
 
@@ -55,7 +54,7 @@ Berbeda dengan BFS dan DFS yang mencari secara "buta" (hanya tahu struktur graf)
 | **Closed Set** (*explored*) | Node yang sudah selesai dieksplorasi |
 | **Priority Queue** | Antrian yang selalu mengeluarkan node dengan nilai terkecil lebih dulu |
 
-### Tiga nilai utama pada A\*
+### Tiga nilai utama
 
 ```
 f(n) = g(n) + h(n)
@@ -63,7 +62,12 @@ f(n) = g(n) + h(n)
 
 - **`g(n)`**: biaya *sebenarnya* dari **Start** ke node `n`.
 - **`h(n)`**: biaya *perkiraan* dari node `n` ke **Goal** (heuristik).
-- **`f(n)`**: total perkiraan biaya jalur yang melewati `n`. Node dengan `f` terkecil dipilih lebih dulu.
+- **`f(n)`**: nilai prioritas. Node dengan `f` terkecil dipilih lebih dulu.
+
+| Algoritma | Nilai `f(n)` yang dipakai |
+|---|---|
+| **A\*** | `g(n) + h(n)` |
+| **Greedy Best-First** | `h(n)` saja (mengabaikan `g`) |
 
 ### Jenis heuristik pada grid
 
@@ -78,13 +82,14 @@ f(n) = g(n) + h(n)
 - **Admissible**: heuristik *tidak pernah melebihi* biaya sebenarnya (`h(n) ≤ h*(n)`).
 - **Consistent** (monotonic): `h(n) ≤ c(n, n') + h(n')`. Syarat ini lebih kuat, dan membuat node yang sudah di-*closed* tidak perlu dibuka ulang.
 
+> Greedy tidak membutuhkan syarat ini untuk **berjalan**, tetapi syarat ini **tidak cukup** membuat Greedy optimal, karena Greedy tidak memperhitungkan `g(n)`.
+
 ---
 
 ## 3. Algoritma yang Dibahas
 
 | Algoritma | Rumus prioritas | Memakai heuristik? | Menjamin jalur terpendek? |
 |---|---|:---:|:---:|
-| **Dijkstra** | `g(n)` | ❌ | ✅ |
 | **Greedy Best-First Search** | `h(n)` | ✅ | ❌ |
 | **A\* (A-Star)** | `g(n) + h(n)` | ✅ | ✅ (jika heuristik admissible) |
 
@@ -92,7 +97,7 @@ f(n) = g(n) + h(n)
 
 ## 4. Cara Kerja A\*
 
-A\* menggabungkan keunggulan **Dijkstra** (memperhatikan biaya yang sudah ditempuh `g`) dan **Greedy** (memperhatikan perkiraan jarak ke tujuan `h`).
+A\* menggabungkan dua hal: **biaya yang sudah ditempuh** (`g`) agar jalurnya tetap murah, dan **perkiraan jarak ke tujuan** (`h`) agar pencarian terarah.
 
 ### Langkah-langkah
 
@@ -156,32 +161,78 @@ function A_STAR(start, goal):
 
 ---
 
-## 5. Cara Kerja Dijkstra
+## 5. Cara Kerja Greedy Best-First Search
 
-Dijkstra mencari jalur terpendek dengan selalu mengeksplorasi node yang **biaya totalnya dari Start paling kecil** (`g(n)`). Tidak ada tebakan arah ke Goal, sehingga pencarian menyebar ke **segala arah**.
+Greedy hanya melihat **heuristik**: `f(n) = h(n)`. Node yang *tampak* paling dekat dengan Goal selalu dipilih lebih dulu, **tanpa memedulikan biaya yang sudah ditempuh**. Ibaratnya berjalan lurus ke arah tujuan tanpa menghitung seberapa jauh sudah berjalan.
 
 ### Langkah-langkah
 
-1. Beri semua node jarak `∞`, kecuali Start yang berjarak `0`.
-2. Masukkan Start ke priority queue.
-3. **Ulangi**:
-   1. Ambil node dengan **jarak terkecil** (`current`).
-   2. Untuk setiap tetangga, hitung `jarak_baru = jarak[current] + cost`.
-   3. Jika `jarak_baru < jarak[tetangga]`, perbarui jarak dan *parent*, lalu masukkan ke queue (proses ini disebut **relaxation**).
-4. Berhenti saat Goal diambil dari queue (atau saat semua node selesai, jika ingin jarak ke semua node).
+1. Masukkan node **Start** ke **Open Set** dengan prioritas `h(start)`.
+2. **Ulangi** selama Open Set tidak kosong:
+   1. Ambil node dengan **`h` terkecil** (sebut `current`).
+   2. Jika `current` adalah **Goal**, selesai. Susun jalur dengan menelusuri *parent*.
+   3. Pindahkan `current` ke **Closed Set**.
+   4. Untuk setiap **tetangga** yang bukan dinding dan belum pernah ditemukan:
+      - catat `parent = current`,
+      - masukkan ke Open Set dengan prioritas `h(tetangga)`.
+3. Jika Open Set habis dan Goal belum tercapai, **jalur tidak ada**.
 
-> 💡 **Dijkstra = A\* dengan `h(n) = 0`.** Itu sebabnya `f(n) = g(n)`.
+> Perhatikan: pada Greedy **tidak ada perhitungan `g`** dan **tidak ada pembaruan jalur yang lebih murah**. Begitu sebuah node ditemukan, parent-nya tidak diperbaiki lagi. Inilah sumber utama ketidakoptimalannya.
 
-> ⚠️ Dijkstra **tidak bisa** dipakai pada graf dengan **bobot negatif** (gunakan Bellman-Ford).
+### Flowchart
+
+```mermaid
+flowchart TD
+    A([Mulai]) --> B[Masukkan Start ke Open Set]
+    B --> C{Open Set kosong?}
+    C -- Ya --> D([Jalur tidak ditemukan])
+    C -- Tidak --> E[Ambil node dengan h terkecil]
+    E --> F{Node = Goal?}
+    F -- Ya --> G([Susun jalur dari parent])
+    F -- Tidak --> H[Pindahkan ke Closed Set]
+    H --> I[Periksa tetangga yang belum ditemukan]
+    I --> J[Set parent lalu masukkan ke Open Set dengan prioritas h]
+    J --> C
+```
+
+### Pseudocode
+
+```text
+function GREEDY_BEST_FIRST(start, goal):
+    open_set   ← priority queue berisi (h(start), start)
+    discovered ← {start}
+    parent     ← {}
+    closed     ← {}
+
+    while open_set tidak kosong:
+        current ← pop node dengan h terkecil
+        if current == goal:
+            return rekonstruksi_jalur(parent, current)
+
+        closed.add(current)
+        for neighbor in tetangga(current):
+            if neighbor in discovered: continue
+            discovered.add(neighbor)
+            parent[neighbor] ← current
+            push (h(neighbor), neighbor) ke open_set
+
+    return "tidak ada jalur"
+```
 
 ---
 
-## 6. Greedy Best-First Search
+## 6. Perbedaan A\* dan Greedy
 
-Greedy hanya melihat **heuristik**: `f(n) = h(n)`. Node yang *tampak* paling dekat dengan Goal selalu dipilih lebih dulu, tanpa memedulikan biaya yang sudah ditempuh.
+| Aspek | Greedy Best-First | A\* |
+|---|---|---|
+| Rumus prioritas | `h(n)` | `g(n) + h(n)` |
+| Yang dipertimbangkan | Hanya perkiraan sisa jarak | Biaya tempuh + perkiraan sisa jarak |
+| Perbaiki jalur yang lebih murah? | ❌ Tidak | ✅ Ya (jika `g_baru` lebih kecil) |
+| Jalur terpendek | ❌ Tidak dijamin | ✅ Dijamin (heuristik admissible) |
+| Kecepatan | Sangat cepat | Cepat, sedikit lebih lambat dari Greedy |
+| Perilaku saat ada rintangan | Mudah terjebak | Mampu memutar dan mencari jalur lebih murah |
 
-- ✅ Sangat cepat dan hemat eksplorasi.
-- ❌ Bisa tertipu oleh rintangan (misalnya dinding berbentuk "U") dan **tidak menjamin jalur terpendek**.
+**Intinya:** Greedy *"berani tapi ceroboh"*, A\* *"terarah tapi tetap berhitung"*.
 
 ---
 
@@ -227,6 +278,15 @@ Nilai heuristik (admissible dan consistent):
 
 > Greedy langsung memilih C karena tampak lebih dekat ke Goal, tetapi lupa bahwa jalur A→C mahal (biaya 4). A\* memperhitungkan `g` sehingga menemukan jalur yang lebih murah.
 
+### Ringkasan hasil
+
+| Algoritma | Node yang diproses | Jalur | Biaya |
+|---|:---:|---|:---:|
+| **A\*** | A, B, C, D (4 node) | A → B → C → D | **4** ✅ |
+| **Greedy** | A, C, D (3 node) | A → C → D | 5 ❌ |
+
+Greedy memproses lebih sedikit node, tetapi hasilnya lebih mahal. Inilah **trade-off kecepatan vs kualitas**.
+
 ---
 
 ## 8. Visualisasi Algoritma
@@ -248,36 +308,45 @@ Pada grid, setiap sel digambarkan sebagai node. Visualisasi membantu kita **meli
 
 ### Contoh ilustrasi sederhana (teks)
 
-`S` = Start, `G` = Goal, `#` = dinding, `*` = jalur, `o` = node yang dieksplorasi
+`S` = Start, `G` = Goal, `#` = dinding, `*` = jalur akhir, `o` = node yang dieksplorasi
+
+Dinding berbentuk **"U"** dengan bukaan menghadap Start, dan Goal berada di belakang dinding:
 
 ```text
-Dijkstra (menyebar ke segala arah)    A* (terarah ke Goal)
-o o o o o o o o                       . . . . . . . .
-o o o o o o o o                       . . . . . . . .
-o o S * * * * o                       . . S * * * * .
-o o o o # # * o                       . . . . # # * .
-o o o o # G * o                       . . . . # G * .
-o o o o o o o o                       . . . . . . . .
+Greedy (masuk ke dalam "U", lalu terjebak)   A* (cepat menyadari jebakan)
+. . . . . . . . . .                          * * * * * * * * * *
+. . . # # # # # . .                          * . . # # # # # . *
+. . . o o o o # . .                          * . . . . . . # . *
+S o o o o o o # . G                          S o o . . . . # . G
+. . . o o o o # . .                          . . . . . . . # . .
+. . . # # # # # . .                          . . . # # # # # . .
+. . . . . . . . . .                         . . . . . . . . . .
 
-Node dieksplorasi: banyak             Node dieksplorasi: sedikit
+Greedy mengisi seluruh bagian dalam "U"      A* hanya sedikit masuk, lalu memutar
+sebelum akhirnya memutar. Node banyak,       dan memperoleh jalur terpendek.
+jalur akhir panjang dan berbelit.
 ```
+
+> Ilustrasi di atas bersifat konseptual. Pola sebenarnya bergantung pada heuristik dan urutan tetangga yang dipakai.
 
 ### Yang perlu diamati saat visualisasi
 
 | Algoritma | Pola eksplorasi | Hasil jalur |
 |---|---|---|
-| **Dijkstra** | Menyebar **melingkar** dari Start ke segala arah | Terpendek ✅ |
-| **A\*** | Menyempit dan **condong ke arah Goal** | Terpendek ✅ |
 | **Greedy** | **Langsung lurus** ke Goal, bisa tersangkut dinding | Belum tentu terpendek ❌ |
+| **A\*** | Menyempit dan **condong ke arah Goal**, tetapi tetap melebar bila perlu | Terpendek ✅ |
 
 ### Cara membaca visualisasi
 
 1. **Pelebaran area biru/ungu** menunjukkan seberapa banyak node yang harus diperiksa. Semakin sedikit, semakin efisien.
-2. **Bentuk frontier**: Dijkstra membentuk "gelombang" melingkar, A\* membentuk "panah" ke arah Goal.
+2. **Bentuk frontier**: Greedy membentuk "garis lurus" ke Goal, sedangkan A\* membentuk "panah" yang bisa melebar saat ada rintangan.
 3. **Jalur kuning** muncul hanya setelah Goal ditemukan, dengan menelusuri *parent* dari Goal ke Start.
-4. Coba **tambahkan dinding berbentuk "U"** di depan Goal. Greedy akan terjebak dan memutar jauh, sedangkan A\* tetap menemukan jalur terpendek.
+4. Coba **tambahkan dinding berbentuk "U"** di depan Goal. Greedy akan masuk ke dalam "U", terjebak, dan memutar jauh, sedangkan A\* tetap menemukan jalur terpendek.
+5. Bandingkan **panjang jalur kuning** dan **jumlah sel ungu** dari kedua algoritma pada peta yang sama.
 
 ### Contoh kode inti (Python)
+
+**A\***
 
 ```python
 import heapq
@@ -323,17 +392,52 @@ def a_star(grid, start, goal):
     return None, visited_order
 ```
 
-**Mengubah A\* menjadi Dijkstra** cukup dengan membuat heuristik selalu nol:
+**Greedy Best-First Search**
 
 ```python
-def heuristic(a, b):
-    return 0   # f(n) = g(n) → Dijkstra
+def greedy_best_first(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    open_set = [(heuristic(start, goal), start)]      # (h, node)
+    parent = {}
+    discovered = {start}
+    closed = set()
+    visited_order = []
+
+    while open_set:
+        h, current = heapq.heappop(open_set)
+        if current in closed:
+            continue
+        closed.add(current)
+        visited_order.append(current)
+
+        if current == goal:
+            path = [current]
+            while current in parent:
+                current = parent[current]
+                path.append(current)
+            return path[::-1], visited_order
+
+        r, c = current
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 0:
+                neighbor = (nr, nc)
+                if neighbor not in discovered:
+                    discovered.add(neighbor)
+                    parent[neighbor] = current
+                    heapq.heappush(open_set, (heuristic(neighbor, goal), neighbor))
+
+    return None, visited_order
 ```
 
-**Mengubah A\* menjadi Greedy** cukup dengan memakai `h` saja sebagai prioritas:
+**Perbedaan intinya hanya pada prioritas:**
 
 ```python
-f_new = heuristic(neighbor, goal)   # f(n) = h(n) → Greedy Best-First
+# A*     → f(n) = g(n) + h(n)
+f_new = new_g + heuristic(neighbor, goal)
+
+# Greedy → f(n) = h(n)
+f_new = heuristic(neighbor, goal)
 ```
 
 > Simpan `visited_order` dan `path` untuk dipakai oleh bagian animasi (misalnya `pygame`, `matplotlib`, atau `tkinter`), sehingga setiap langkah bisa digambar satu per satu.
@@ -344,21 +448,20 @@ f_new = heuristic(neighbor, goal)   # f(n) = h(n) → Greedy Best-First
 
 ## 9. Efisiensi (Kompleksitas)
 
-Notasi: `V` = jumlah node, `E` = jumlah edge, `b` = branching factor, `d` = kedalaman solusi, `m` = kedalaman maksimum.
+Notasi: `b` = branching factor, `d` = kedalaman solusi, `m` = kedalaman maksimum.
 
 | Algoritma | Waktu | Memori | Lengkap (*complete*)? | Optimal? |
 |---|---|---|:---:|:---:|
-| **Dijkstra** (binary heap) | `O((V + E) log V)` | `O(V)` | ✅ | ✅ (bobot ≥ 0) |
 | **A\*** | `O(bᵈ)` kasus terburuk, jauh lebih cepat dengan heuristik bagus | `O(bᵈ)` | ✅ | ✅ (heuristik admissible) |
 | **Greedy Best-First** | `O(bᵐ)` kasus terburuk | `O(bᵐ)` | ❌ (bisa berputar tanpa *closed set*) | ❌ |
 
 ### Poin efisiensi
 
-- **Kualitas heuristik menentukan kecepatan A\***. Semakin dekat `h(n)` dengan biaya sebenarnya (tanpa melebihinya), semakin sedikit node yang dieksplorasi.
-- Jika `h(n) = 0`, A\* menjadi **Dijkstra** (paling banyak eksplorasi).
-- Jika `h(n)` *melebihi* biaya sebenarnya (non-admissible), A\* menjadi lebih cepat tetapi **kehilangan jaminan optimal**.
-- **Memori** adalah kendala utama A\*, karena semua node di Open dan Closed Set harus disimpan.
-- Penggunaan **priority queue (heap)** sangat penting. Memakai list biasa akan memperlambat pencarian menjadi `O(V²)`.
+- **Kualitas heuristik menentukan kecepatan keduanya**. Semakin dekat `h(n)` dengan biaya sebenarnya, semakin sedikit node yang dieksplorasi.
+- Jika `h(n) = 0`, A\* kehilangan arah dan eksplorasinya menyebar ke segala arah (paling banyak eksplorasi).
+- Jika `h(n)` *melebihi* biaya sebenarnya (non-admissible), A\* menjadi lebih cepat tetapi **kehilangan jaminan optimal**. Semakin besar `h` mendominasi, perilakunya semakin mirip Greedy.
+- **Memori** adalah kendala utama A\*, karena semua node di Open dan Closed Set harus disimpan. Greedy biasanya lebih hemat pada kasus sederhana.
+- Penggunaan **priority queue (heap)** sangat penting. Memakai list biasa akan memperlambat pencarian secara signifikan.
 
 ---
 
@@ -369,18 +472,9 @@ Notasi: `V` = jumlah node, `E` = jumlah edge, `b` = branching factor, `d` = keda
 | Kelebihan | Kekurangan |
 |---|---|
 | Menjamin jalur **terpendek** (jika heuristik admissible) | Butuh **memori besar** (menyimpan semua node terbuka) |
-| Lebih **efisien** dari Dijkstra karena terarah | Kualitas hasil dan kecepatan **bergantung pada heuristik** |
+| **Terarah**, sehingga efisien dibanding pencarian buta | Kualitas hasil dan kecepatan **bergantung pada heuristik** |
 | **Complete**: pasti menemukan solusi jika ada | Perlu merancang heuristik yang sesuai dengan masalah |
-| Fleksibel: bisa diubah menjadi Dijkstra atau Greedy | Lebih lambat dari Greedy pada kasus sederhana |
-
-### ✅ Dijkstra
-
-| Kelebihan | Kekurangan |
-|---|---|
-| Menjamin jalur **terpendek** | Mengeksplorasi **terlalu banyak node** (tidak terarah) |
-| **Tidak perlu heuristik** | Tidak mendukung **bobot negatif** |
-| Bisa menghitung jarak ke **semua node** sekaligus | Lebih lambat dari A\* untuk satu pasang Start-Goal |
-| Sederhana dan mudah dipahami | Boros waktu pada graf berukuran besar |
+| Bisa memperbaiki jalur bila ditemukan rute yang lebih murah | Lebih lambat dari Greedy pada kasus sederhana |
 
 ### ✅ Greedy Best-First Search
 
@@ -389,6 +483,7 @@ Notasi: `V` = jumlah node, `E` = jumlah edge, `b` = branching factor, `d` = keda
 | Sangat **cepat** pada banyak kasus | **Tidak menjamin** jalur terpendek |
 | Eksplorasi node **sedikit** | Mudah **terjebak** pada rintangan (local optimum) |
 | Implementasi sederhana | Bisa tidak lengkap jika tidak memakai *closed set* |
+| Hemat memori pada peta sederhana | Mengabaikan biaya yang sudah ditempuh (`g`) |
 
 ---
 
@@ -396,26 +491,26 @@ Notasi: `V` = jumlah node, `E` = jumlah edge, `b` = branching factor, `d` = keda
 
 Gabungan dengan bagian **Uninformed Search** sebelumnya:
 
-| Aspek | BFS | DFS | Dijkstra | Greedy | A\* |
-|---|:---:|:---:|:---:|:---:|:---:|
-| Kategori | Uninformed | Uninformed | Uninformed (berbobot) | Informed | Informed |
-| Struktur data | Queue | Stack | Priority Queue | Priority Queue | Priority Queue |
-| Graf berbobot | ❌ | ❌ | ✅ | ✅ | ✅ |
-| Memakai heuristik | ❌ | ❌ | ❌ | ✅ | ✅ |
-| Jalur terpendek | ✅ (tanpa bobot) | ❌ | ✅ | ❌ | ✅ |
-| Kecepatan | Sedang | Bervariasi | Sedang | Cepat | Cepat |
-| Memori | Tinggi | Rendah | Tinggi | Sedang | Tinggi |
+| Aspek | BFS | DFS | Greedy | A\* |
+|---|:---:|:---:|:---:|:---:|
+| Kategori | Uninformed | Uninformed | Informed | Informed |
+| Struktur data | Queue | Stack | Priority Queue | Priority Queue |
+| Graf berbobot | ❌ | ❌ | ✅ | ✅ |
+| Memakai heuristik | ❌ | ❌ | ✅ | ✅ |
+| Jalur terpendek | ✅ (tanpa bobot) | ❌ | ❌ | ✅ |
+| Kecepatan | Sedang | Bervariasi | Cepat | Cepat |
+| Memori | Tinggi | Rendah | Sedang | Tinggi |
 
 ---
 
 ## 12. Penerapan di Dunia Nyata
 
-- 🎮 **Game**: pathfinding NPC / karakter (RTS, RPG, dll.)
+- 🎮 **Game**: pathfinding NPC / karakter (RTS, RPG, dll.). A\* untuk jalur akurat, Greedy bila butuh respons sangat cepat.
 - 🗺️ **Navigasi peta**: Google Maps, GPS, dan rute pengiriman
 - 🤖 **Robotika**: perencanaan gerak robot dan kendaraan otonom
-- 🌐 **Jaringan komputer**: routing paket (OSPF memakai Dijkstra)
 - 🧩 **Puzzle**: 8-puzzle, Rubik's cube, dan penyelesaian maze
 - 📦 **Logistik**: optimasi rute gudang dan pengiriman
+- 🔎 **Pencarian cepat "cukup baik"**: Greedy dipakai saat solusi *good enough* lebih penting daripada solusi optimal
 
 ---
 
@@ -423,9 +518,9 @@ Gabungan dengan bagian **Uninformed Search** sebelumnya:
 
 1. **Informed Search** memanfaatkan heuristik untuk mengarahkan pencarian sehingga lebih efisien daripada pencarian buta.
 2. **A\*** adalah algoritma paling seimbang karena **optimal dan efisien**, dengan syarat heuristiknya admissible.
-3. **Dijkstra** menjamin jalur terpendek tanpa heuristik, tetapi mengeksplorasi lebih banyak node. Ia dapat dianggap sebagai **A\* dengan `h(n) = 0`**.
-4. **Greedy Best-First** sangat cepat tetapi **tidak menjamin hasil terbaik**.
-5. **Visualisasi** memperlihatkan perbedaan nyata: Dijkstra menyebar melingkar, A\* terarah ke Goal, dan Greedy lurus menuju Goal namun mudah tersangkut.
+3. **Greedy Best-First** sangat cepat dan sederhana, tetapi **tidak menjamin hasil terbaik** karena mengabaikan biaya yang sudah ditempuh.
+4. Perbedaan keduanya hanya pada rumus prioritas: **A\* = `g + h`**, **Greedy = `h`**.
+5. **Visualisasi** memperlihatkan perbedaan nyata: Greedy lurus menuju Goal namun mudah tersangkut, sedangkan A\* terarah dan tetap menemukan jalur terpendek.
 
 ---
 
@@ -433,5 +528,4 @@ Gabungan dengan bagian **Uninformed Search** sebelumnya:
 
 - Russell, S. & Norvig, P. *Artificial Intelligence: A Modern Approach* (Bab Informed Search).
 - Hart, P., Nilsson, N., & Raphael, B. (1968). *A Formal Basis for the Heuristic Determination of Minimum Cost Paths*.
-- Dijkstra, E. W. (1959). *A Note on Two Problems in Connexion with Graphs*.
 - Red Blob Games: *Introduction to the A\* Algorithm* (https://www.redblobgames.com/pathfinding/a-star/introduction.html)
