@@ -1,10 +1,10 @@
-# 🧠 Expert System (Sistem Pakar) pada Kecerdasan Buatan
+#  Expert System (Sistem Pakar) pada Kecerdasan Buatan
 
 > Panduan lengkap tentang Expert System: konsep, arsitektur, cara kerja, representasi pengetahuan, mesin inferensi, penanganan ketidakpastian, hingga implementasi kode dengan Python.
 
 ---
 
-## 📑 Daftar Isi
+## Daftar Isi
 
 1. [Pendahuluan](#1-pendahuluan)
 2. [Sejarah Singkat](#2-sejarah-singkat)
